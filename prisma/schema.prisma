@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Form {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @default("")
+  slug        String   @unique
+  published   Boolean  @default(false)
+  closedAt    DateTime?
+  submitLabel String   @default("Submit")
+  successMsg  String   @default("Thank you for your response!")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  fields      Field[]
+  submissions Submission[]
+
+  @@index([slug])
+}
+
+model Field {
+  id           String  @id @default(cuid())
+  formId       String
+  type         String  // text, textarea, email, number, select, radio, checkbox, date, url, phone
+  label        String
+  placeholder  String  @default("")
+  helpText     String  @default("")
+  required     Boolean @default(false)
+  options      String  @default("") // JSON array for select/radio/checkbox
+  validation   String  @default("") // JSON validation rules
+  defaultValue String  @default("")
+  order        Int     @default(0)
+
+  form         Form    @relation(fields: [formId], references: [id], onDelete: Cascade)
+  answers      Answer[]
+
+  @@index([formId])
+  @@index([order])
+}
+
+model Submission {
+  id        String   @id @default(cuid())
+  formId    String
+  metadata  String   @default("") // JSON: userAgent, ip, etc.
+  createdAt DateTime @default(now())
+
+  form      Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  answers   Answer[]
+
+  @@index([formId])
+  @@index([createdAt])
+}
+
+model Answer {
+  id           String @id @default(cuid())
+  submissionId String
+  fieldId      String
+  value        String @default("")
+
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  field        Field      @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@index([submissionId])
+  @@index([fieldId])
+}
