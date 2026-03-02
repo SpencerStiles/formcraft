@@ -4,6 +4,7 @@ import { prisma } from './db';
 import { revalidatePath } from 'next/cache';
 import { buildFormSchema } from './validation';
 import { randomBytes } from 'crypto';
+import { logger } from './logger';
 
 // ──────────────────────────────────────────────
 // Forms
@@ -31,7 +32,7 @@ export async function createForm(data: { title: string; description?: string }) 
     revalidatePath('/');
     return form;
   } catch (err) {
-    console.error('[createForm]', err);
+    logger.error('Failed in createForm', { error: err instanceof Error ? err.message : 'Unknown error' });
     throw new Error(err instanceof Error ? err.message : 'Operation failed');
   }
 }
@@ -56,7 +57,7 @@ export async function updateForm(
     revalidatePath(`/forms/${form.slug}/edit`);
     return form;
   } catch (err) {
-    console.error('[updateForm]', err);
+    logger.error('Failed in updateForm', { error: err instanceof Error ? err.message : 'Unknown error' });
     throw new Error(err instanceof Error ? err.message : 'Operation failed');
   }
 }
@@ -66,7 +67,7 @@ export async function deleteForm(id: string) {
     await prisma.form.delete({ where: { id } });
     revalidatePath('/');
   } catch (err) {
-    console.error('[deleteForm]', err);
+    logger.error('Failed in deleteForm', { error: err instanceof Error ? err.message : 'Unknown error' });
     throw new Error(err instanceof Error ? err.message : 'Operation failed');
   }
 }
@@ -81,7 +82,7 @@ export async function getForm(slug: string) {
       },
     });
   } catch (err) {
-    console.error('[getForm]', err);
+    logger.error('Failed in getForm', { error: err instanceof Error ? err.message : 'Unknown error' });
     throw new Error(err instanceof Error ? err.message : 'Operation failed');
   }
 }
@@ -95,7 +96,7 @@ export async function listForms() {
       },
     });
   } catch (err) {
-    console.error('[listForms]', err);
+    logger.error('Failed in listForms', { error: err instanceof Error ? err.message : 'Unknown error' });
     throw new Error(err instanceof Error ? err.message : 'Operation failed');
   }
 }
@@ -135,7 +136,7 @@ export async function addField(data: {
     revalidatePath('/');
     return field;
   } catch (err) {
-    console.error('[addField]', err);
+    logger.error('Failed in addField', { error: err instanceof Error ? err.message : 'Unknown error' });
     throw new Error(err instanceof Error ? err.message : 'Operation failed');
   }
 }
@@ -167,7 +168,7 @@ export async function updateField(
     revalidatePath('/');
     return field;
   } catch (err) {
-    console.error('[updateField]', err);
+    logger.error('Failed in updateField', { error: err instanceof Error ? err.message : 'Unknown error' });
     throw new Error(err instanceof Error ? err.message : 'Operation failed');
   }
 }
@@ -177,7 +178,7 @@ export async function deleteField(id: string) {
     await prisma.field.delete({ where: { id } });
     revalidatePath('/');
   } catch (err) {
-    console.error('[deleteField]', err);
+    logger.error('Failed in deleteField', { error: err instanceof Error ? err.message : 'Unknown error' });
     throw new Error(err instanceof Error ? err.message : 'Operation failed');
   }
 }
@@ -231,7 +232,7 @@ export async function submitForm(data: {
     revalidatePath('/');
     return submission;
   } catch (err) {
-    console.error('[submitForm]', err);
+    logger.error('Failed in submitForm', { error: err instanceof Error ? err.message : 'Unknown error' });
     throw new Error(err instanceof Error ? err.message : 'Operation failed');
   }
 }
@@ -248,7 +249,7 @@ export async function getSubmissions(formId: string) {
       },
     });
   } catch (err) {
-    console.error('[getSubmissions]', err);
+    logger.error('Failed in getSubmissions', { error: err instanceof Error ? err.message : 'Unknown error' });
     throw new Error(err instanceof Error ? err.message : 'Operation failed');
   }
 }
@@ -265,7 +266,7 @@ export async function getSubmission(id: string) {
       },
     });
   } catch (err) {
-    console.error('[getSubmission]', err);
+    logger.error('Failed in getSubmission', { error: err instanceof Error ? err.message : 'Unknown error' });
     throw new Error(err instanceof Error ? err.message : 'Operation failed');
   }
 }
@@ -275,7 +276,7 @@ export async function deleteSubmission(id: string) {
     await prisma.submission.delete({ where: { id } });
     revalidatePath('/');
   } catch (err) {
-    console.error('[deleteSubmission]', err);
+    logger.error('Failed in deleteSubmission', { error: err instanceof Error ? err.message : 'Unknown error' });
     throw new Error(err instanceof Error ? err.message : 'Operation failed');
   }
 }
@@ -294,7 +295,7 @@ export async function getStats() {
 
     return { formCount, fieldCount, submissionCount };
   } catch (err) {
-    console.error('[getStats]', err);
+    logger.error('Failed in getStats', { error: err instanceof Error ? err.message : 'Unknown error' });
     throw new Error(err instanceof Error ? err.message : 'Operation failed');
   }
 }
