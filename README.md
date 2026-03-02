@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-[**Live Demo →**](https://formcraft.spencerstiles.dev)
+[**Live Demo →**](https://formcraft.spencerstiles.com)
 
 > Portfolio/reference implementation demonstrating complex form state management and validation in Next.js 14.
 
